@@ -52,12 +52,11 @@ class mySQL extends QuerySQL
             //echo $this->getQuery();
             $stmt = mySQL::$link->prepare($this->getQuery());
             $stmt->execute($this->params);
-            $this->getQuery();
+            //$this->getQuery();
         }
         catch (PDOException $e)
         {
             $this->errortext .= "Error execution: ".$e->getMessage()."<br/>";
-            error_log ("_5_ ".$this->errortext, 3, "/home/user10/public_html/errors.log");
             return null;
         }
         $this->clearQuery(true);

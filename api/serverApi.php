@@ -6,11 +6,9 @@ include_once "ViewApi.php";
 
 class serverApi
 {
-    public $requestUri = [];
-    public $requestParams = [];
-    protected $action = ''; 
+    protected $requestUri = [];
+    protected $requestParams = [];
     protected $method = ''; //GET|POST|PUT|DELETE
-    protected $className;
     protected $ViewApi;
 
     public function __construct()
@@ -22,7 +20,7 @@ class serverApi
             $url=substr($url, 0, $str);
         };
         $this->requestUri = explode('/', $url);
-        $this->requestUri = array_splice($this->requestUri,4);
+        $this->requestUri = array_splice($this->requestUri, 4);
         $this->requestParams = $_REQUEST;
         $this->method = $_SERVER['REQUEST_METHOD'];
         //error_log ("_1_ ".print_r($this->requestUri, true), 3, "/home/user10/public_html/errors.log");
@@ -53,11 +51,21 @@ class serverApi
         {
             throw new RuntimeException('class API Not Found', 405);
         }
-        $this->action = ($this->requestUri ? array_shift($this->requestUri) : null);
-        $class = new $className;
-        if((!$this->action) || !method_exists($class, $this->action))
+        $action = ($this->requestUri ? array_shift($this->requestUri) : null);
+
+        $requestParams = $this->requestParams;
+        if(count($requestParams)==0 && ($this->method == 'PUT' || $this->method == 'POST'))
         {
-            throw new RuntimeException('Invalid Method '.$this->action, 405);
+            $requestParams = json_decode(file_get_contents('php://input'), true);      
+        } 
+        //error_log ("_01_ ".print_r($this->requestParams, true), 3, "/home/user10/public_html/errors.log");
+        //error_log ("_02_ ".print_r($requestParams, true), 3, "/home/user10/public_html/errors.log");
+        $function = mb_strtolower($this->method).$action;
+
+        $class = new $className;
+        if((!$function) || !method_exists($class, $function))
+        {
+            throw new RuntimeException('Invalid Method '.$action, 405);
         }
 
         $user = $_SERVER['PHP_AUTH_USER'];
@@ -69,19 +77,28 @@ class serverApi
             return $this->ViewApi->response('', 401);
         }
 
-        $requestParams = $this->requestParams;
-        if(count($requestParams)==0 && ($this->method == 'PUT' || $this->method == 'POST'))
-        {
-            $requestParams = json_decode(file_get_contents('php://input'), true);      
-        } 
-        //error_log ("_01_ ".print_r($this->requestParams, true), 3, "/home/user10/public_html/errors.log");
-        //error_log ("_02_ ".print_r($requestParams, true), 3, "/home/user10/public_html/errors.log");
-        $res = $class->{$this->action}($requestParams);
-        if($res)
-        {
-            return $this->ViewApi->response($res, 200);
+        //error_log ("_ww_ ".$function."(".print_r($requestParams, true), 3, "/home/user10/public_html/errors.log");
+        $res = $class->{$function}($requestParams);
+        switch ($this->method) {
+            case 'GET':
+                if(!$res)
+                {
+                    //error_log ("sdsd ".$function."".print_r($res, true), 3, "/home/user10/public_html/errors.log");
+                    return $this->ViewApi->response('Data not found', 404);
+                }
+                break;
+            case 'PUT':                
+            case 'POST':
+            case 'DELETE':
+                if(!$res)
+                {
+                    return $this->ViewApi->response("Error saving data", 500);
+                }
+                break;
+            default:
+                return $this->ViewApi->response("Invalid method", 405);
         }
-        return $this->ViewApi->response('Data not found', 404);      
+        return $this->ViewApi->response($res, 200);     
        
     }
 

@@ -64,7 +64,7 @@ class QuerySQL
                 $this->stringVerification($fild, "Invalid fild name");
                 $name_param = ":param".count($this->params);
                 $this->filds[$fild] = $name_param;
-                if($value != "")
+                if(!is_string($value) || $value != "")
                 {
                     $this->params[$name_param]=$value;
                 }

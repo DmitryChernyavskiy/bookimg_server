@@ -46,7 +46,7 @@ class events
 
     }
 
-    public function setEvent($var)
+    public function postEvent($var)
     {
         $id_user = $var['id_user'];
         $id_room = $var['id_room'];
@@ -63,7 +63,7 @@ class events
         return null;
     }
 
-    public function setEventChild($var)
+    public function postEventChild($var)
     {
         $id = $var['id'];
         $id_event = $var['id_event'];
@@ -80,7 +80,7 @@ class events
         return null;
     }
 
-    public function delEvent($var)
+    public function deleleEvent($var)
     {
         $id = $var['id'];
 
@@ -100,7 +100,7 @@ class events
         return null;
     }
 
-    public function delEventChild($var)
+    public function deleteEventChild($var)
     {
         $id = $var['id'];
         $id_event = $var['id_event'];
