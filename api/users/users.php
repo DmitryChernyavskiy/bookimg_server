@@ -15,11 +15,10 @@ class users
         unset($this->DB);
     }
  
-    public function getUsers()
+    public function getAllUsers()
     {
         
-        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("email")->Select();
-        $res  = $query->execution();
+        $res = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("email")->SetFild("blocked", $blocked)->Select()->execution();
         return $res;
     } 
 
@@ -44,6 +43,7 @@ class users
             $query->setConditions("password", $password);
         }
         $res = $query->Select()->execution();
+        error_log ("_res_".print_r($res, true), 3, "/var/www/html/errors.log");
         if (!$res || count($user)==0)
         {
             return null;
@@ -52,7 +52,7 @@ class users
         return $res;
     }
 
-    public function posttUser($var)
+    public function postUser($var)
     {
         $user = $var['user'];
         $password = $var['password'];
@@ -60,14 +60,30 @@ class users
         $email = $var['email'];
         $role = $var['role'];
         
-        if (isset($user) && isset($password) && isset($email) && !$this->findUser($var))
+        if (isset($user) && isset($password) && isset($email) && !$this->getUser($var))
         {
             $blocked = ($blocked ? 1 : 0);
             $role = (isset($role) ? $role : 'user');
-            $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("name", $user)->SetFild("password", $password)->SetFild("blocked", $blocked)->SetFild("email", $email)->SetFild("role", $role)->insert();
-            $res = $query->execution();
+            $res = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("name", $user)->SetFild("password", $password)->SetFild("blocked", $blocked)->SetFild("email", $email)->SetFild("role", $role)->insert()->execution();
             //error_log ("_4_ ".print_r($res, true), 3, "/home/user10/public_html/errors.log");
-            return $res;
+            return true;
+        }
+        return null;
+    }
+    
+    public function putUser($var)
+    {
+        $id = $var['id'];
+        //$password = $var['password'];
+        $blocked = $var['blocked'];
+        //$email = $var['email'];
+        //$role = $var['role'];
+        
+        if (isset($id))
+        {
+            $blocked = ($blocked ? 1 : 0);
+            $res = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("blocked", $blocked)->setConditions("id", $id)->update()->execution();
+            return true;
         }
         return null;
     }

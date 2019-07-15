@@ -20,9 +20,10 @@ class serverApi
             $url=substr($url, 0, $str);
         };
         $this->requestUri = explode('/', $url);
-        $this->requestUri = array_splice($this->requestUri, 4);
+        $this->requestUri = array_splice($this->requestUri, 3);
         $this->requestParams = $_REQUEST;
         $this->method = $_SERVER['REQUEST_METHOD'];
+        error_log ("_1_ ".print_r($this->requestUri, true), 3, "/var/www/html/errors.log");
         //error_log ("_1_ ".print_r($this->requestUri, true), 3, "/home/user10/public_html/errors.log");
 
         if ($this->method == 'POST' && array_key_exists('HTTP_X_HTTP_METHOD', $_SERVER))
@@ -61,7 +62,8 @@ class serverApi
         //error_log ("_01_ ".print_r($this->requestParams, true), 3, "/home/user10/public_html/errors.log");
         //error_log ("_02_ ".print_r($requestParams, true), 3, "/home/user10/public_html/errors.log");
         $function = mb_strtolower($this->method).$action;
-
+        error_log ("_$function_ ".$function, 3, "/var/www/html/errors.log");
+      
         $class = new $className;
         if((!$function) || !method_exists($class, $function))
         {
@@ -77,7 +79,8 @@ class serverApi
             return $this->ViewApi->response('', 401);
         }
 
-        //error_log ("_ww_ ".$function."(".print_r($requestParams, true), 3, "/home/user10/public_html/errors.log");
+        error_log("_ww1_".$this->method, 3, "/var/www/html/errors.log");
+        error_log("_ww2_".$function."(".print_r($requestParams, true), 3, "/var/www/html/errors.log");
         $res = $class->{$function}($requestParams);
         switch ($this->method) {
             case 'GET':
