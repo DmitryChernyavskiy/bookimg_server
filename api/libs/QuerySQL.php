@@ -3,11 +3,12 @@ class QuerySQL
 {
         private $tableName, $limit, $filds, $conditions;
         private $join_conditions, $group_filds, $functions, $query="";
-        public $params, $errortext = "";
+        public $params, $errortext = "", $returnStatus;
         
         function __construct()
         {
-                $this->limit=0; 
+                $this->limit=0;
+                $this->returnStatus=true;
                 $this->filds=array();
                 $this->conditions=array();
                 $this->join_conditions=array();
@@ -143,6 +144,11 @@ class QuerySQL
                 return $this->addSynonym("max", $fild, $synonym);
         }
         
+        public function setDayOfMonth($fild, $synonym = "")
+        {
+                return $this->addSynonym("dayofmonth", $fild, $synonym);
+        }
+        
         public function group()
         {
                 $add_column = "";
@@ -224,6 +230,8 @@ class QuerySQL
         
         public function select()
         {
+                $this->returnStatus=false;
+                
                 $query = "SELECT DISTINCT ";
                 $separator = "";
                 foreach($this->filds as $key=>$val)
@@ -251,6 +259,7 @@ class QuerySQL
         
         public function delete()
         {
+                $this->returnStatus=true;
                 $query = "DELETE ".$this->tableName." FROM ".$this->tableName." /*add_table*/";
                 
                 //where
@@ -263,7 +272,8 @@ class QuerySQL
         }
         
         public function insert()
-        {
+        {  
+                $this->returnStatus=true;
                 $query = "INSERT INTO ".$this->tableName." ";
                 if(count($this->filds)>0)
                 {
@@ -285,6 +295,7 @@ class QuerySQL
         
         public function update()
         {
+                $this->returnStatus=true;
                 $query = "UPDATE ".$this->tableName." /*add_table*/ SET ";
                 if(count($this->filds)>0)
                 {

@@ -23,7 +23,7 @@ class serverApi
         $this->requestUri = array_splice($this->requestUri, 3);
         $this->requestParams = $_REQUEST;
         $this->method = $_SERVER['REQUEST_METHOD'];
-        error_log ("_1_ ".print_r($this->requestUri, true), 3, "/var/www/html/errors.log");
+        //error_log ("_1_ ".print_r($this->requestUri, true), 3, "/var/www/html/errors.log");
         //error_log ("_1_ ".print_r($this->requestUri, true), 3, "/home/user10/public_html/errors.log");
 
         if ($this->method == 'POST' && array_key_exists('HTTP_X_HTTP_METHOD', $_SERVER))
@@ -62,7 +62,8 @@ class serverApi
         //error_log ("_01_ ".print_r($this->requestParams, true), 3, "/home/user10/public_html/errors.log");
         //error_log ("_02_ ".print_r($requestParams, true), 3, "/home/user10/public_html/errors.log");
         $function = mb_strtolower($this->method).$action;
-        error_log ("_$function_ ".$function, 3, "/var/www/html/errors.log");
+        //error_log ("\n_2_function_ ".$function, 3, "/var/www/html/errors.log");
+        //error_log ("\n_2_classNam_ ".$className, 3, "/var/www/html/errors.log");
       
         $class = new $className;
         if((!$function) || !method_exists($class, $function))
@@ -70,16 +71,17 @@ class serverApi
             throw new RuntimeException('Invalid Method '.$action, 405);
         }
 
+        //error_log("\n_rrr_", 3, "/var/www/html/errors.log");
         $user = $_SERVER['PHP_AUTH_USER'];
         $pass = $_SERVER['PHP_AUTH_PW'];
         $users = new users;
-        $validated = (isset($user) && $users->findUser(['user'=> $user,'pass'=> $pass]));
+        $validated = (isset($user) && $users->getUser(['user'=> $user,'pass'=> $pass]));
         if (!$validated && $className != "users") {
-            header('WWW-Authenticate: Basic realm="My Realm"');
-            return $this->ViewApi->response('', 401);
+            //header('WWW-Authenticate: Basic realm="My Realm"');
+            //return $this->ViewApi->response('', 401);
         }
-
-        error_log("_ww1_".$this->method, 3, "/var/www/html/errors.log");
+        error_log("\n_ww11_".print_r($_SERVER ,true), 3, "/var/www/html/errors.log");
+        error_log("\n_ww11_".$this->method, 3, "/var/www/html/errors.log");
         error_log("_ww2_".$function."(".print_r($requestParams, true), 3, "/var/www/html/errors.log");
         $res = $class->{$function}($requestParams);
         switch ($this->method) {

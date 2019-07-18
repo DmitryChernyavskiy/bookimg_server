@@ -36,10 +36,10 @@ class events
         {
             $query->setConditions("id_room", $id_room);
         };
-        $query->select()->setTableName(PREFIX_TABLE_MYSQL_DB."event_child")->SetFild("id")->SetFild("date_start")->SetFild("date_end")->
-        setJoinConditions(PREFIX_TABLE_MYSQL_DB."event.id = ".PREFIX_TABLE_MYSQL_DB."event_child.id_event")->leftJoin()->
+        $query->select()->setTableName(PREFIX_TABLE_MYSQL_DB."event_child")->SetFild("id_event")->SetFild("id")->setDayOfMonth("date_start", day_of_month)->SetFild("date_start")->SetFild("date_end")->
+        setJoinConditions(PREFIX_TABLE_MYSQL_DB."event.id = ".PREFIX_TABLE_MYSQL_DB."event_child.id_event")->InnerJoin()->
         setTableName(PREFIX_TABLE_MYSQL_DB."rooms")->SetFild("name")->
-        setJoinConditions(PREFIX_TABLE_MYSQL_DB."event.id_room = ".PREFIX_TABLE_MYSQL_DB."rooms.id")->leftJoin();
+        setJoinConditions(PREFIX_TABLE_MYSQL_DB."event.id_room = ".PREFIX_TABLE_MYSQL_DB."rooms.id")->leftJoin()->group();
 
         $res =$query->execution();
         return $res;
@@ -70,9 +70,9 @@ class events
         $date_start = $var['date_start'];
         $date_end = $var['date_end'];
 
-        if (isset($id) && isset($id_event) && isset($date_start) && isset($date_end))
+        if (isset($id_event) && isset($date_start) && isset($date_end))
         {
-            $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."event_child")->SetFild("id_event", $id_event)->SetFild("id", $id)->SetFild("date_start", $date_start)->SetFild("date_end", $date_end)->insert();
+            $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."event_child")->SetFild("id_event", $id_event)->SetFild("date_start", $date_start)->SetFild("date_end", $date_end)->insert();
 
             $res =$this->DB->execution();
             return $res;

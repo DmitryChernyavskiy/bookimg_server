@@ -33,7 +33,7 @@ CREATE TABLE `final_users` (
   KEY `name` (`name`),
   KEY `password` (`password`),
   KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,6 +42,7 @@ CREATE TABLE `final_users` (
 
 LOCK TABLES `final_users` WRITE;
 /*!40000 ALTER TABLE `final_users` DISABLE KEYS */;
+INSERT INTO `final_users` VALUES (1,'user10','123',1,'rest@rest.com','user'),(2,'user101','123',0,'rest@rest.com','user'),(3,'user102','123',0,'rest@rest.com','user');
 /*!40000 ALTER TABLE `final_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -61,7 +62,7 @@ CREATE TABLE `final_event` (
   PRIMARY KEY (`id`),
   KEY `id_user` (`id_user`),
   KEY `id_room` (`id_room`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,6 +71,7 @@ CREATE TABLE `final_event` (
 
 LOCK TABLES `final_event` WRITE;
 /*!40000 ALTER TABLE `final_event` DISABLE KEYS */;
+INSERT INTO `final_event` VALUES (1,1,1,'2019-07-15 00:00:00','test note'),(2,1,2,'2019-07-15 00:00:00','test note'),(3,2,1,'2019-07-15 00:00:00','test note');
 /*!40000 ALTER TABLE `final_event` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -88,7 +90,7 @@ CREATE TABLE `final_event_child` (
   PRIMARY KEY (`id`),
   KEY `id_event` (`id_event`),
   KEY `eventdate` (`date_start`,`date_end`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,6 +99,7 @@ CREATE TABLE `final_event_child` (
 
 LOCK TABLES `final_event_child` WRITE;
 /*!40000 ALTER TABLE `final_event_child` DISABLE KEYS */;
+INSERT INTO `final_event_child` VALUES (5,1,'2019-07-17 20:00:00','2019-07-17 21:30:00'),(6,1,'2019-07-17 22:00:00','2019-07-17 23:30:00'),(7,2,'2019-07-18 10:15:00','2019-07-18 13:30:00'),(8,2,'2019-07-18 15:00:00','2019-07-18 17:00:00'),(9,3,'2019-07-18 08:00:00','2019-07-18 10:00:00');
 /*!40000 ALTER TABLE `final_event_child` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -109,9 +112,9 @@ DROP TABLE IF EXISTS `final_rooms`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `final_rooms` (
   `id` bigint(10) NOT NULL AUTO_INCREMENT,
-  `name` bigint(20) NOT NULL,
+  `name` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,6 +123,7 @@ CREATE TABLE `final_rooms` (
 
 LOCK TABLES `final_rooms` WRITE;
 /*!40000 ALTER TABLE `final_rooms` DISABLE KEYS */;
+INSERT INTO `final_rooms` VALUES (1,'Hall 1'),(2,'Hall 2'),(3,'Banqueting hall');
 /*!40000 ALTER TABLE `final_rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -132,4 +136,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-09 12:52:42
+-- Dump completed on 2019-07-18 18:06:59

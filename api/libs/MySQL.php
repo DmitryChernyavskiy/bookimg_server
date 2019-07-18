@@ -47,23 +47,28 @@ class mySQL extends QuerySQL
     {
         //echo "**".$this->getQuery();
         //print_r($this->params);
-        error_log ("\n_query_ ".$this->getQuery, 3, "/var/www/html/errors.log");
-        error_log ("\n_params_ ".print_r($this->params, true), 3, "/var/www/html/errors.log");
+        //error_log ("\n_query_ ".$this->getQuery(), 3, "/var/www/html/errors.log");
+        //error_log ("\n_params_ ".print_r($this->params, true), 3, "/var/www/html/errors.log");
         try
         {
             //echo $this->getQuery();
             $stmt = mySQL::$link->prepare($this->getQuery());
-            $stmt->execute($this->params);
+            if (!$stmt->execute($this->params))
+            {
+                return null;
+            }
             //$this->getQuery();
         }
         catch (PDOException $e)
         {
-            error_log ("_error_ ".$e->getMessage(), 3, "/var/www/html/errors.log");
+            //error_log ("_error_ ".$e->getMessage(), 3, "/var/www/html/errors.log");
             $this->errortext .= "Error execution: ".$e->getMessage()."<br/>";
             return null;
         }
         $this->clearQuery(true);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        //error_log ("\n_fetch_ ".$this->returnStatus."_ ".print_r($res, true), 3, "/var/www/html/errors.log");
+        return ($this->returnStatus ? true : $res);
 /* 
         $dd = $this->getQuery();
         $this->clearQuery(true);
