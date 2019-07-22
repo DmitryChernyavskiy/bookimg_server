@@ -17,11 +17,24 @@ class users
  
     public function getAllUsers()
     {
-        
-        $res = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("email")->SetFild("blocked", $blocked)->Select()->execution();
+        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("email")->SetFild("blocked", $blocked);
+        $res = $query->Select()->execution();
         return $res;
     } 
 
+    public function getListUsers()
+    {
+        $id = $var['id'];
+        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name");
+        if (isset($id) && $id!="")
+        {
+            $query->setConditions("id", $id);
+        }
+ 
+        $res = $query->Select()->execution();
+        return $res;
+    }
+    
     public function getUser($var)
     {
         $user = $var['user'];
@@ -74,15 +87,16 @@ class users
     public function putUser($var)
     {
         $id = $var['id'];
-        //$password = $var['password'];
+        
+        $user = $var['user'];
+        $password = $var['password'];
         $blocked = $var['blocked'];
-        //$email = $var['email'];
-        //$role = $var['role'];
+        $email = $var['email'];
         
         if (isset($id))
         {
             $blocked = ($blocked ? 1 : 0);
-            $res = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("blocked", $blocked)->setConditions("id", $id)->update()->execution();
+            $res = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("name", $user)->SetFild("password", $password)->SetFild("blocked", $blocked)->SetFild("email", $email)->setConditions("id", $id)->update()->execution();
             return true;
         }
         return null;

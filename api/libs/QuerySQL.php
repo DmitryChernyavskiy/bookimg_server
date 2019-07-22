@@ -72,11 +72,11 @@ class QuerySQL
                 return $this;
         }
 
-        public function setConditions($fild, $value)
+        public function setConditions($fild, $value, $sign = "=")
         {
                 $this->stringVerification($fild, "Invalid condition fild name");
                 $name_param = ":param".count($this->params);
-                $this->conditions[$fild] = $name_param;
+                $this->conditions[$fild.$sign] = $name_param;
                 $this->params[$name_param]=$value;
                 //print_r($this->params);
                 //print_r($this->conditions);
@@ -189,7 +189,7 @@ class QuerySQL
                         $separator = "";
                         foreach($this->conditions as $key=>$val)
                         {
-                                $query .= $separator."".$this->tableName.".".$key." = ".$val."";
+                                $query .= $separator."".$this->tableName.".".$key.$val."";
                                 $separator = " AND ";
                         }
                         $query .= ")";

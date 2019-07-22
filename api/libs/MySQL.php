@@ -43,12 +43,17 @@ class mySQL extends QuerySQL
         return $this;
     }
     
+    public function lastInsertId()
+    {
+        return mySQL::$link->lastInsertId();
+    }
+    
     public function Execution()
     {
         //echo "**".$this->getQuery();
         //print_r($this->params);
-        //error_log ("\n_query_ ".$this->getQuery(), 3, "/var/www/html/errors.log");
-        //error_log ("\n_params_ ".print_r($this->params, true), 3, "/var/www/html/errors.log");
+        error_log ("\n_query_ ".$this->getQuery(), 3, "/var/www/html/errors.log");
+        error_log ("\n_params_ ".print_r($this->params, true), 3, "/var/www/html/errors.log");
         try
         {
             //echo $this->getQuery();
@@ -61,7 +66,7 @@ class mySQL extends QuerySQL
         }
         catch (PDOException $e)
         {
-            //error_log ("_error_ ".$e->getMessage(), 3, "/var/www/html/errors.log");
+            error_log ("_error_ ".$e->getMessage(), 3, "/var/www/html/errors.log");
             $this->errortext .= "Error execution: ".$e->getMessage()."<br/>";
             return null;
         }
