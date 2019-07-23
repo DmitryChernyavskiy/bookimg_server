@@ -17,7 +17,7 @@ class users
  
     public function getAllUsers()
     {
-        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("email")->SetFild("blocked", $blocked);
+        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("email")->SetFild("blocked", $blocked)->SetFild("role");
         $res = $query->Select()->execution();
         return $res;
     } 
@@ -25,7 +25,7 @@ class users
     public function getListUsers()
     {
         $id = $var['id'];
-        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name");
+        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("email")->SetFild("blocked", $blocked);
         if (isset($id) && $id!="")
         {
             $query->setConditions("id", $id);
@@ -50,7 +50,7 @@ class users
             return true;
         }*/
         
-        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("name")->SetFild("password")->setConditions("name", $user);
+        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("role")->setConditions("name", $user);
         if (isset($password) && $password!="")
         {
             $query->setConditions("password", $password);
