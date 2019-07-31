@@ -21,14 +21,14 @@ class events
         return $this->{$action}();
     }
 
-    public function getEvents($var)
+    public function getEvents($var, $id = '0', $admin = false)
     {
         $date_start = $var['date_start'];
         $date_end = $var['date_end'];
         $id_user = $var['id_user'];
         $id_room = $var['id_room'];
 	$id_event = $var['id_event'];
-        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."event")->SetFild("date_create");
+        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."event")->SetFild("date_create")->SetFild("id_user");
         if (isset($id_event) && $id_event!=0)
         {
             $query->SetFild("note")->setConditions("id", $id_event);
@@ -36,6 +36,10 @@ class events
         if (isset($id_user) && $id_user!=0)
         {
             $query->setConditions("id_user", $id_user);
+        }
+        elseif (!$admin && isset($id_event) && $id_event!=0 && isset($id) && $id!="")
+        {
+            $query->setConditions("id_user", $id);
         };
         if (isset($id_room) && $id_room!=0)
         {
@@ -64,11 +68,16 @@ class events
         $date_start = $var['date_start'];
         $date_end = $var['date_end'];
         $id_room = $var['id_room'];
+        $id_event = $var['id_event'];
 
         if (isset($date_start) && isset($date_end) && isset($id_room))
         {
-            $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."event_child")->SetFild("id")->setConditions("date_start", $date_end,"<")->setConditions("date_end", $date_start, ">")->Select()->
-                    setTableName(PREFIX_TABLE_MYSQL_DB."event")->setConditions("id_room", $id_room)->setJoinConditions(PREFIX_TABLE_MYSQL_DB."event.id = ".PREFIX_TABLE_MYSQL_DB."event_child.id_event")->InnerJoin();
+            $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."event_child")->SetFild("id")->setConditions("date_start", $date_end,"<")->setConditions("date_end", $date_start, ">");
+            if (isset($id_event) && $id_event!=0)
+            {
+                $query->setConditions("id_event", $id_event, "<>");
+            }
+            $query->Select()->setTableName(PREFIX_TABLE_MYSQL_DB."event")->setConditions("id_room", $id_room)->setJoinConditions(PREFIX_TABLE_MYSQL_DB."event.id = ".PREFIX_TABLE_MYSQL_DB."event_child.id_event")->InnerJoin();
             $res =$query->execution();
             return (!$res);
         }
@@ -128,7 +137,7 @@ class events
         return null;
     }
 
-    public function postDeleteEvent($var)
+    public function postDelEvent($var)
     {
         $id = $var['id'];
 

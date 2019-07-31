@@ -17,17 +17,22 @@ class users
  
     public function getAllUsers()
     {
-        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("email")->SetFild("blocked", $blocked)->SetFild("role");
+        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("email")->SetFild("blocked")->SetFild("role");
         $res = $query->Select()->execution();
         return $res;
     } 
 
-    public function getListUsers()
+    public function getListUsers($var, $id = '0', $admin = false)
     {
-        $id = $var['id'];
-        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("email")->SetFild("blocked", $blocked);
-        if (isset($id) && $id!="")
+        //error_log("\n_ww3_id=".$id, 3, "/var/www/html/errors.log");
+        $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("blocked");
+        if ($admin==true)
         {
+            $query->SetFild("password")->SetFild("email");
+        }
+        elseif (isset($id) && $id!="")
+        {
+            //error_log("\n_ww4_id=".$id, 3, "/var/www/html/errors.log");
             $query->setConditions("id", $id);
         }
  
@@ -43,13 +48,7 @@ class users
         {
            return null;
         };
-
-        /*$test = ['user10'=>'777'];
-        if($test[$user] == $pass)
-        {
-            return true;
-        }*/
-        
+     
         $query = $this->DB->connect()->setTableName(PREFIX_TABLE_MYSQL_DB."users")->SetFild("id")->SetFild("name")->SetFild("password")->SetFild("role")->setConditions("name", $user);
         if (isset($password) && $password!="")
         {
